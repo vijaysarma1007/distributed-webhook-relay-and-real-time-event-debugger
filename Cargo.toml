@@ -1,0 +1,23 @@
+[workspace.package]
+authors = ["srirangam vijay mohan <svmsarma52@gmail.com>"]
+version = "1.0.0"
+rust-version = "1.98.0"
+description = "Distributed webhook relay and real time event debugger"
+license = "MIT OR Apache-2.0"
+edition = "2021"
+repository = "https://github.com/org/repo"
+
+[workspace]
+resolver = "2"
+members = [
+    "crates/core-types",
+    "crates/crypto-signer",
+    "crates/db-store",
+    "services/ingest-api",
+    "services/stream-bridge",
+    "services/dispatch-worker",
+    "frontend/debugger-ui"
+]
+
+[workspace.dependencies]
+anyhow = "1.0.104"
