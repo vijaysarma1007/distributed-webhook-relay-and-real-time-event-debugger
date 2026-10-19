@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: alm_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vijay_postgres
+      POSTGRES_PASSWORD: password123456
+      POSTGRES_DB: webhookdb
+    ports:
+      - "5432:5432"
+    volumes:
+      # Persists database data across container restarts
+      - postgres_data:/var/lib/postgresql/data
+      # Optional: any .sql scripts in this folder run automatically on first boot
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  postgres_data:
+
+# run command in root project file : "docker compose up -d"
