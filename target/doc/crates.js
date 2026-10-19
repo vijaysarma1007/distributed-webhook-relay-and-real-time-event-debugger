@@ -1,2 +1,0 @@
-window.ALL_CRATES = ["anyhow","chrono","core_types","crypto_signer","db_store","debugger_ui","dispatch_worker","ingest_api","itoa","memchr","num_traits","proc_macro2","quote","serde","serde_core","serde_derive","serde_json","stream_bridge","syn","unicode_ident","uuid","windows_link","zmij"];
-//{"start":21,"fragment_lengths":[8,9,13,16,11,14,18,13,7,9,13,14,8,8,13,15,13,16,6,16,7,15,7]}

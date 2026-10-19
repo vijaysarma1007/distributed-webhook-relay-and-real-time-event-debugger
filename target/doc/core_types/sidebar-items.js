@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["DeliveryStatus"],"struct":["DeliveryAttempt","IngestWebhookRequest","LiveEventNotification","OutBoxEvent"]};
