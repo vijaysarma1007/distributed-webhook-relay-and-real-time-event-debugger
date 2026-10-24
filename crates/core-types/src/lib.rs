@@ -1,7 +1,8 @@
 //! # Core types crate
 //!
 //! High-level architecture overview.
-//! 
+//!
+use anyhow::{Error, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -25,6 +26,21 @@ pub enum DeliveryStatus {
 
     /// The request failed permanently and will not be retried (e.g., invalid destination address or HTTP 404).
     DeadLetter,
+}
+
+/// Into trait converts arms of DeliveryStatus enum into corresponsing string, used in db-store library crate.
+/// 
+#[allow(dead_code, unreachable_code, unused)]
+impl Into<String> for DeliveryStatus {
+    fn into(self) -> String {
+        match self {
+            Self::Pending => String::from("PENDING"),
+            Self::DeadLetter => String::from("DEADLETTER"),
+            Self::Failed => String::from("FAILED"),
+            Self::Delivered => String::from("DELIVERED"),
+            _ => Err(format!("Unknown database delivery status").to_owned()).unwrap(),
+        }
+    }
 }
 
 /// Reprsents the Data Structure for Incoming Webhook request or from origin.
@@ -65,13 +81,13 @@ pub struct OutBoxEvent {
     pub secret_key: String,
 
     /// Delivery status with respect to request sent to client's server (e.g., `"PENDING"`, `"DELIVERED"`, `"FAILED"`, `"DEAD_LETTER"`).
-    pub status: DeliveryStatus,
+    pub status: String,
 
     /// Set the current attempt count.
     pub attempt_count: i32,
 
     /// Set the maximum number of attempts, before setting the status to `DeliveryStatus::DEAD_LETTER`.
-    pub max_attempt: i32,
+    pub max_attempts: i32,
 
     /// Set the time in milliseconds for next try.
     pub next_retry_at: DateTime<Utc>,

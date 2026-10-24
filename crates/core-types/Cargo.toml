@@ -9,6 +9,7 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
+anyhow = {workspace = true}
 chrono = { workspace = true }
 serde = { workspace = true }
 uuid = { workspace = true }

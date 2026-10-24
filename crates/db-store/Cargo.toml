@@ -9,4 +9,8 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
+core-types = {workspace = true, features=["db"]}
 anyhow = {workspace = true}
+sqlx = {workspace = true}
+uuid = {workspace = true}
+chrono = {workspace = true}
