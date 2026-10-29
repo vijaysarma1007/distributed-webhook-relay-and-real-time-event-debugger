@@ -2,7 +2,6 @@
 //!
 //! High-level architecture overview.
 //!
-use anyhow::{Error, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -29,7 +28,11 @@ pub enum DeliveryStatus {
 }
 
 /// Into trait converts arms of DeliveryStatus enum into corresponsing string, used in db-store library crate.
-/// 
+///
+/// # Returns
+///
+/// Retuns a status from matching DeliveryStatus Enum `String` in uppercase or returns an [`core::result::Err`]
+///
 #[allow(dead_code, unreachable_code, unused)]
 impl Into<String> for DeliveryStatus {
     fn into(self) -> String {
@@ -40,6 +43,7 @@ impl Into<String> for DeliveryStatus {
             Self::Delivered => String::from("DELIVERED"),
             _ => Err(format!("Unknown database delivery status").to_owned()).unwrap(),
         }
+        .to_uppercase()
     }
 }
 
