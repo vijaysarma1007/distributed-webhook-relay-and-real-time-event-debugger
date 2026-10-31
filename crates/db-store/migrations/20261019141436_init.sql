@@ -6,7 +6,7 @@ CREATE TABLE outbox_events (
     id UUID PRIMARY KEY,
     destination_url TEXT NOT NULL,
     payload JSONB NOT NULL,
-    secret_key TEXT NOT NULL,
+    encrypted_secret BYTEA NOT NULL,
     status TEXT NOT NULL DEFAULT 'PENDING',
     attempt_count INT NOT NULL DEFAULT 0,
     max_attempts INT NOT NULL DEFAULT 5,
@@ -33,7 +33,7 @@ DECLARE
     target_url TEXT;
 BEGIN
     SELECT destination_url INTO target_url FROM outbox_events WHERE id = NEW.event_id;
-    
+
     PERFORM pg_notify(
         'webhook_stream',
         json_build_object(

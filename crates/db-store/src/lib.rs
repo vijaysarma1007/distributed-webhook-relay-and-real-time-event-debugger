@@ -42,14 +42,14 @@ impl DbStore {
         let event_id = Uuid::new_v4();
 
         sqlx::query!(
-            r#"INSERT INTO outbox_events (id, destination_url, payload, secret_key)
+            r#"INSERT INTO outbox_events (id, destination_url, payload, encrypted_secret)
              VALUES
              ($1, $2, $3, $4)
              "#,
             event_id,
             req.destination_url,
             req.payload,
-            req.secret_key
+            req.encrypted_secret
         )
         .execute(&self.pool)
         .await
@@ -69,7 +69,7 @@ impl DbStore {
     /// Returns a `Vec<OutBoxEvent>` containing the matched records, or a [`sqlx::Error`] with a anyhow context message, if it fails.
     pub async fn fetch_pending_events(&self, batch_size: i64) -> Result<Vec<OutBoxEvent>> {
         let status: String = DeliveryStatus::Pending.into();
-        sqlx::query_as!(OutBoxEvent, r#"SELECT id, destination_url, payload, secret_key, status, attempt_count, max_attempts, next_retry_at, created_at
+        sqlx::query_as!(OutBoxEvent, r#"SELECT id, destination_url, payload, encrypted_secret, status, attempt_count, max_attempts, next_retry_at, created_at
          FROM outbox_events
          WHERE status = $1 AND next_retry_at <= NOW()
          ORDER BY next_retry_at ASC

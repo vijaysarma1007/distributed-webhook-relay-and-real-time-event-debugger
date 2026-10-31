@@ -7,6 +7,8 @@ use hex::encode;
 use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 
+pub mod hashing;
+
 ///Creates a custom type of `HmacSha256`, combines sha256 encryption with hmac.
 type HmacSha256 = Hmac<Sha256>;
 

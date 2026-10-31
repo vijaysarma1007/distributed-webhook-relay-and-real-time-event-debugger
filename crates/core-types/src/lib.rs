@@ -60,7 +60,7 @@ pub struct IngestWebhookRequest {
     pub payload: serde_json::Value,
 
     /// secret key is shared between client and server
-    pub secret_key: String,
+    pub encrypted_secret: Vec<u8>,
 }
 
 /// Represents the Data structure for outgoing request to the client's server.
@@ -82,7 +82,7 @@ pub struct OutBoxEvent {
     pub payload: serde_json::Value,
 
     /// Secret key required to validate the request.
-    pub secret_key: String,
+    pub encrypted_secret: Vec<u8>,
 
     /// Delivery status with respect to request sent to client's server (e.g., `"PENDING"`, `"DELIVERED"`, `"FAILED"`, `"DEAD_LETTER"`).
     pub status: String,
