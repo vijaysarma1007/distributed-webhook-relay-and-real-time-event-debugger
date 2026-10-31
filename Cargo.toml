@@ -16,16 +16,26 @@ members = [
     "services/ingest-api",
     "services/stream-bridge",
     "services/dispatch-worker",
-    "frontend/debugger-ui"
+    "frontend/debugger-ui",
 ]
 
 [workspace.dependencies]
-core-types = {path = "crates/core-types"}
+core-types = { path = "crates/core-types" }
 anyhow = "1.0.104"
-uuid = {version = "1.29.0", features=["serde", "v4"]}
-serde = {version = "1.0.229", features=["derive"]}
+uuid = { version = "1.29.0", features = ["serde", "v4"] }
+serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
 tokio = { version = "1.53.3", features = ["full"] }
-sqlx = { version = "0.9.0", features = ["chrono", "postgres", "runtime-async-std", "tls-native-tls", "uuid", "derive"] }
+sqlx = { version = "0.9.0", features = [
+    "chrono",
+    "postgres",
+    "runtime-async-std",
+    "tls-native-tls",
+    "uuid",
+    "derive",
+] }
 axum = "0.8.9"
-chrono = { version = "0.4.45", features = ["serde"] } 
+chrono = { version = "0.4.45", features = ["serde"] }
+hmac = "0.13.0"
+sha2 = "0.11.1"
+hex = "0.4.3"
