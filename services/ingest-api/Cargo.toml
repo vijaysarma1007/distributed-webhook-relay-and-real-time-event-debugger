@@ -9,4 +9,20 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
-anyhow = {workspace = true}
+# External crates from workspace
+
+anyhow = { workspace = true }
+axum = { workspace = true }
+sqlx = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+tracing-subscriber = { workspace = true }
+dotenvy = { workspace = true }
+serde_json = { workspace = true }
+serde = { workspace = true }
+uuid = { workspace = true }
+
+# Local crates
+db-store = { workspace = true }
+core-types = { workspace = true }
+crypto-signer = { workspace = true }

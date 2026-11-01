@@ -1,7 +1,8 @@
 //! #DB Store Library Crate
 //!
+pub mod dbconnect;
 use anyhow::{Context, Ok, Result};
-use core_types::{DeliveryStatus, IngestWebhookRequest, OutBoxEvent};
+use core_types::{DeliveryStatus, OutBoxEvent, OutboxEventRequest};
 use sqlx::{self, PgPool};
 use uuid::Uuid;
 
@@ -38,7 +39,7 @@ impl DbStore {
     ///
     /// Returns a [`anyhow::Result`] with either [`Ok(Uuid)`] or an [`Error`] with appropriate context.
     ///
-    pub async fn insert_outbox_events(&self, req: IngestWebhookRequest) -> Result<Uuid> {
+    pub async fn insert_outbox_events(&self, req: OutboxEventRequest) -> Result<Uuid> {
         let event_id = Uuid::new_v4();
 
         sqlx::query!(

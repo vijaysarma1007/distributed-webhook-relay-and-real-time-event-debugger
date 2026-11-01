@@ -60,7 +60,7 @@ pub struct IngestWebhookRequest {
     pub payload: serde_json::Value,
 
     /// secret key is shared between client and server
-    pub encrypted_secret: Vec<u8>,
+    pub encrypted_secret: String,
 }
 
 /// Represents the Data structure for outgoing request to the client's server.
@@ -155,4 +155,11 @@ pub struct LiveEventNotification {
 
     /// Timestamp marking exactly when the network was fired.
     pub attempted_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct OutboxEventRequest {
+    pub destination_url: String,
+    pub payload: serde_json::Value,
+    pub encrypted_secret: Vec<u8>,
 }
