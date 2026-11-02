@@ -25,12 +25,16 @@ type HmacSha256 = Hmac<Sha256>;
 /// Returns a `anyhow::Result` containing the ecoded hex or returns an error, if failed.
 ///
 pub fn generate_signature(payload: &str, secret: &str, timestamp: i64) -> Result<String, String> {
+    // create a new hmac with sha256 from client's secret as bytes
     let mut mac = HmacSha256::new_from_slice(secret.as_bytes())
-        .context("creating mac with sha256")
+        .context("creating hmac with sha256")
         .map_err(|e| format!("Invalid HMAC key : {e}"))?;
-
+    // update the hmac with {timestamp}.{payload}, which will avoid any duplication of payload from hacker, if any.
     mac.update(format!("{}.{}", timestamp, payload).as_bytes());
+    // finalizes the hmac
     let result = mac.finalize();
+    // encode the result as bytes into string
     let hex_encode = encode(result.into_bytes());
+    // returns an option with encoded String
     Ok(hex_encode)
 }

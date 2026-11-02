@@ -1,5 +1,6 @@
 //! #DB Store Library Crate
 //!
+pub mod config;
 pub mod dbconnect;
 use anyhow::{Context, Ok, Result};
 use core_types::{DeliveryStatus, OutBoxEvent, OutboxEventRequest};

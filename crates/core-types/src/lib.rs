@@ -157,9 +157,18 @@ pub struct LiveEventNotification {
     pub attempted_at: DateTime<Utc>,
 }
 
+///This struct is used to convert the ingest event struct into outbox event request which converts the encrypted_secret from `String` to` Vec<u8>`. This struct is used to send event which creates and stores in outbox event table.
+///
+/// # Outbox Event Request Struct
+///
 #[derive(Debug, Clone, Serialize)]
 pub struct OutboxEventRequest {
+    /// Reciever or client's endpoint in String
     pub destination_url: String,
+
+    /// Payload value that needs to sent to client's environment
     pub payload: serde_json::Value,
+
+    /// Value of encrypted secret in `Vec<u8>` after encrypted
     pub encrypted_secret: Vec<u8>,
 }

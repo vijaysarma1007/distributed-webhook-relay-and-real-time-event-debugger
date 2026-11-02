@@ -1,13 +1,7 @@
+use crate::config::{IDLE_TIMEOUT, MAX_TIMEOUT, MINIMUN_CONNECTIONS};
 use anyhow::{Context, Result};
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use std::time::Duration;
-
-/// `MAX_TIMEOUT` set to acuire timeout
-const MAX_TIMEOUT: u64 = 5;
-/// `IDLE_TIMEOUT` set to idle timeout
-const IDLE_TIMEOUT: u64 = 600;
-/// `MINIMUN_CONNECTIONS` set to minimum connections at 5.
-const MINIMUN_CONNECTIONS: u32 = 5;
 
 /// connect to the postgres databse
 /// # Methods used

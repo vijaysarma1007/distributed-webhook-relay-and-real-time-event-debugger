@@ -7,11 +7,11 @@
 - Command to migrate sql file : sqlx migrate run --source [source folder]/migrations
 - Command to push the updated schema in docker : sqlx database reset -y --source [source folder]/migrations
 - Within the docker desktop's exec for the newly created postgres instance, run this command to view the tables: psql -U [postgres username] -d [postgres_db name], it will show data like below :
-
+- Execute from powershell terminal : docker exec -t [container name] psql -U [postgres username] -d [postgres_db name] -c "SELECT * FROM outbox_events;"
   List of relations
-  | Schema | Name | Type | Owner |
-  | :--- | :--- | :--- | :--- |
-  | public | `_sqlx_migrations` | table | vijay_postgres |
-  | public | `delivery_attempts` | table | vijay_postgres |
-  | public | `outbox_events` | table | vijay_postgres |
-  (3 rows)
+  | Schema   | Name                | Type  | Owner          |
+  | :------- | :------------------ | :---- | :------------- |
+  | public   | `_sqlx_migrations`  | table | vijay_postgres |
+  | public   | `delivery_attempts` | table | vijay_postgres |
+  | public   | `outbox_events`     | table | vijay_postgres |
+  | (3 rows) |
