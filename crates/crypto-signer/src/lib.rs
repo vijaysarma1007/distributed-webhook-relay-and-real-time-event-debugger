@@ -33,7 +33,7 @@ pub fn generate_signature(payload: &str, secret: &str, timestamp: i64) -> Result
     mac.update(format!("{}.{}", timestamp, payload).as_bytes());
     // finalizes the hmac
     let result = mac.finalize();
-    // encode the result as bytes into string
+    // converts raw bytes into readable lowercase hexadecimal string representation
     let hex_encode = encode(result.into_bytes());
     // returns an option with encoded String
     Ok(hex_encode)
