@@ -1,5 +1,5 @@
 use crate::config::{IDLE_TIMEOUT, MAX_TIMEOUT, MINIMUN_CONNECTIONS};
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use std::time::Duration;
 
@@ -18,6 +18,15 @@ use std::time::Duration;
 /// Returns a [`DbStore`] struct containing the postgres pool for successful connection.
 ///
 pub async fn connect(database_url: &str, max_connections: u32) -> Result<Pool<Postgres>> {
+    // If maximum connections is less than minimum connections then returns an error
+    if max_connections <= MINIMUN_CONNECTIONS {
+        bail!(format!(
+            "Maximum connections needs to be more or equal than Minimum connections, which is {}",
+            MINIMUN_CONNECTIONS
+        ));
+    }
+
+    //Creates a new pg pool for postgres
     let pool = PgPoolOptions::new()
         .max_connections(max_connections)
         .min_connections(MINIMUN_CONNECTIONS)
@@ -27,5 +36,6 @@ pub async fn connect(database_url: &str, max_connections: u32) -> Result<Pool<Po
         .await
         .context("Connecting to the database")?;
 
+    // returns an Option<Pool<Postgres>>
     Ok(pool)
 }
