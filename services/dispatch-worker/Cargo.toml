@@ -18,3 +18,5 @@ db-store = { workspace = true }
 anyhow = { workspace = true }
 reqwest = { workspace = true }
 chrono = { workspace = true }
+tracing-subscriber = { workspace = true }
+tokio = { workspace = true }

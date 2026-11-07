@@ -650,6 +650,8 @@ dependencies = [
  "crypto-signer",
  "db-store",
  "reqwest",
+ "tokio",
+ "tracing-subscriber",
 ]
 
 [[package]]

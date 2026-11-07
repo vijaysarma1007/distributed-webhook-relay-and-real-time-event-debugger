@@ -31,7 +31,7 @@ impl ClientConnect {
         Self { client }
     }
 
-    pub async fn connect(&self, event: &OutBoxEvent, signature: &str) -> Result<Response> {
+    pub async fn connect(&self, event: OutBoxEvent, signature: &str) -> Result<Response> {
         let payload = event.payload.to_string();
 
         self.client

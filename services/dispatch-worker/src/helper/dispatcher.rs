@@ -1,13 +1,11 @@
 use crate::config::MAXIMUM_ALLOWED_TEXT_SIZE_FROM_RESPONSE;
-use anyhow::Context;
 use chrono::Utc;
 use core_types::OutBoxEvent;
 use crypto_signer::{generate_signature, hashing::SecureSecret};
-use db_store::clientconnect::{self, ClientConnect};
-use reqwest::Client;
+use db_store::clientconnect::ClientConnect;
 use std::time::Instant;
 
-pub(self) struct DispatchResult {
+pub struct DispatchResult {
     pub http_status: Option<i32>,
     pub latency_ms: i32,
     pub response_body: Option<String>,
@@ -15,12 +13,8 @@ pub(self) struct DispatchResult {
     pub is_success: bool,
 }
 
-pub async fn execute_delivery(
-    client: &Client,
-    crypto: &SecureSecret,
-    event: OutBoxEvent,
-) -> DispatchResult {
-    let encrypted_secret = event.encrypted_secret;
+pub async fn execute_delivery(crypto: &SecureSecret, event: OutBoxEvent) -> DispatchResult {
+    let encrypted_secret = &event.encrypted_secret;
     let secret = match crypto.decrypt(&encrypted_secret) {
         Ok(secure) => secure,
         Err(err) => {
@@ -35,7 +29,7 @@ pub async fn execute_delivery(
     };
 
     let timestamp = Utc::now().timestamp();
-    let payload = event.payload.to_string();
+    let payload = &event.payload.to_string();
     let signature = match generate_signature(&payload, &secret, timestamp) {
         Ok(signature) => signature,
         Err(err) => {
@@ -51,7 +45,7 @@ pub async fn execute_delivery(
 
     let start = Instant::now();
 
-    let response = ClientConnect::default().connect(&event, &signature).await;
+    let response = ClientConnect::default().connect(event, &signature).await;
 
     let latency_ms = start.elapsed().as_millis().min(i32::MAX as u128) as i32;
 
