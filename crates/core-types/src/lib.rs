@@ -69,7 +69,7 @@ pub struct IngestWebhookRequest {
 ///
 /// varaints in this struct are added as a `"db"` feature with `"sqlx"` as its dependency.
 /// `derive(sqlx::FromRow)` automatically generates the code needed to convert a raw database row into rust struct.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Copy)]
 #[cfg_attr(feature = "db", derive(sqlx::FromRow))]
 pub struct OutBoxEvent {
     /// Generates uniqe id using Uuid crate.

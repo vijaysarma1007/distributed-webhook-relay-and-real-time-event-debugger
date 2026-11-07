@@ -36,5 +36,6 @@ pub fn generate_signature(payload: &str, secret: &str, timestamp: i64) -> Result
     // converts raw bytes into readable lowercase hexadecimal string representation
     let hex_encode = encode(result.into_bytes());
     // returns an option with encoded String
-    Ok(hex_encode)
+    let formatted_signature = format!("t={},v1={}", timestamp, hex_encode);
+    Ok(formatted_signature)
 }

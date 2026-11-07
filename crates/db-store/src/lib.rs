@@ -1,5 +1,6 @@
 //! #DB Store Library Crate
 //!
+pub mod clientconnect;
 pub mod config;
 pub mod dbconnect;
 use anyhow::{Context, Ok, Result};

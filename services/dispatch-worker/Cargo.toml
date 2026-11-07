@@ -9,4 +9,12 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
-anyhow = {workspace = true}
+# local dependencies
+core-types = { workspace = true }
+crypto-signer = { workspace = true }
+db-store = { workspace = true }
+
+# external dependencies
+anyhow = { workspace = true }
+reqwest = { workspace = true }
+chrono = { workspace = true }
