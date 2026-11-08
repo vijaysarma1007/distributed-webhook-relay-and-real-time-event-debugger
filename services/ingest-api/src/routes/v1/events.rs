@@ -14,6 +14,7 @@ use axum::{
 use core_types::{DeliveryStatus, IngestWebhookRequest, OutboxEventRequest};
 use crypto_signer::hashing::SecureSecret;
 use serde::Serialize;
+use sqlx::PgPool;
 use uuid::Uuid;
 
 ///
@@ -46,7 +47,7 @@ struct InsertOutboxEventResponseError {
 /// # Returns
 /// Returns a [`Router`] Struct
 ///
-pub fn handle_events(state: AppState) -> Router {
+pub fn handle_events(state: AppState<PgPool>) -> Router {
     Router::new()
         .route("/events", post(handle_ingest))
         .with_state(state)
@@ -63,7 +64,7 @@ pub fn handle_events(state: AppState) -> Router {
 /// Returns a Response which implements IntoResponse Trait.
 ///
 async fn handle_ingest(
-    State(state): State<AppState>,
+    State(state): State<AppState<PgPool>>,
     Json(payload): Json<IngestWebhookRequest>,
 ) -> Response {
     // Extracts secret phrase from state (AppState struct) as String ands converts into &str.

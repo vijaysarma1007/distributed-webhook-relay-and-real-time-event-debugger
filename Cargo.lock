@@ -608,6 +608,7 @@ dependencies = [
  "core-types",
  "reqwest",
  "sqlx",
+ "tracing",
  "uuid",
 ]
 
@@ -649,9 +650,13 @@ dependencies = [
  "core-types",
  "crypto-signer",
  "db-store",
+ "dotenvy",
  "reqwest",
+ "sqlx",
  "tokio",
+ "tracing",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]

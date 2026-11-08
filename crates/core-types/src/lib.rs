@@ -172,3 +172,11 @@ pub struct OutboxEventRequest {
     /// Value of encrypted secret in `Vec<u8>` after encrypted
     pub encrypted_secret: Vec<u8>,
 }
+
+pub struct DispatchResult {
+    pub http_status: Option<i32>,
+    pub latency_ms: i32,
+    pub response_body: Option<String>,
+    pub error_message: Option<String>,
+    pub is_success: bool,
+}

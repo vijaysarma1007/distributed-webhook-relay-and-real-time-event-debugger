@@ -28,8 +28,8 @@ use tracing_subscriber;
 /// * `secret_phrase` - A secret phrase accepts `String`, from .env file
 ///
 #[derive(Clone)]
-pub struct AppState {
-    store: DbStore,
+pub struct AppState<T> {
+    store: DbStore<T>,
     secret_phrase: String,
 }
 

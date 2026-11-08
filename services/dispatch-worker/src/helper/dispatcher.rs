@@ -1,19 +1,11 @@
 use crate::config::MAXIMUM_ALLOWED_TEXT_SIZE_FROM_RESPONSE;
 use chrono::Utc;
-use core_types::OutBoxEvent;
+use core_types::{DispatchResult, OutBoxEvent};
 use crypto_signer::{generate_signature, hashing::SecureSecret};
 use db_store::clientconnect::ClientConnect;
 use std::time::Instant;
 
-pub struct DispatchResult {
-    pub http_status: Option<i32>,
-    pub latency_ms: i32,
-    pub response_body: Option<String>,
-    pub error_message: Option<String>,
-    pub is_success: bool,
-}
-
-pub async fn execute_delivery(crypto: &SecureSecret, event: OutBoxEvent) -> DispatchResult {
+pub async fn execute_delivery(crypto: &SecureSecret, event: &OutBoxEvent) -> DispatchResult {
     let encrypted_secret = &event.encrypted_secret;
     let secret = match crypto.decrypt(&encrypted_secret) {
         Ok(secure) => secure,

@@ -8,3 +8,5 @@ pub(crate) const BATCH_SIZE: i64 = 25;
 pub(crate) const MAX_CONCURRENT_DISPACHES: usize = 20;
 
 pub(crate) const BASE_BACKOFF_SECONDS: i64 = 5;
+
+pub(crate) const MAXIMUM_DATABASE_CONNECTIONS: u32 = 10;
