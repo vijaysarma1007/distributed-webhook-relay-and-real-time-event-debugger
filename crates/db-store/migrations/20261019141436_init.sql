@@ -49,6 +49,18 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION notify_outbox_insert()
+RETURNS TRIGGER AS $$
+BEGIN
+    PERFORM pg_notify('outbox_channel', NEW.id::text);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE TRIGGER trg_delivery_attempt
 AFTER INSERT ON delivery_attempts
 FOR EACH ROW EXECUTE FUNCTION notify_delivery_attempt();
+
+CREATE TRIGGER trg_outbox_insert
+AFTER INSERT ON outbox_events
+FOR EACH ROW EXECUTE FUNCTION notify_outbox_insert();

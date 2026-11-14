@@ -1,10 +1,19 @@
+//!
+//! # Dispatcher
+//!
+//! This function is responsible for dispatching single event to the client server, while decrypting the secret phrase and adding signature to the request.
+//!
+//!
 use crate::config::MAXIMUM_ALLOWED_TEXT_SIZE_FROM_RESPONSE;
 use chrono::Utc;
 use core_types::{DispatchResult, OutBoxEvent};
 use crypto_signer::{generate_signature, hashing::SecureSecret};
 use db_store::clientconnect::ClientConnect;
 use std::time::Instant;
-
+///
+/// # Execute Delivery
+///
+///
 pub async fn execute_delivery(crypto: &SecureSecret, event: &OutBoxEvent) -> DispatchResult {
     let encrypted_secret = &event.encrypted_secret;
     let secret = match crypto.decrypt(&encrypted_secret) {
@@ -73,6 +82,8 @@ pub async fn execute_delivery(crypto: &SecureSecret, event: &OutBoxEvent) -> Dis
         }
         Err(error) => {
             let status = error.status().map(|s| s.as_u16() as i32);
+            println!("error: {:?}", error);
+            println!("status: {:?}", error.status());
             DispatchResult {
                 http_status: status,
                 latency_ms,

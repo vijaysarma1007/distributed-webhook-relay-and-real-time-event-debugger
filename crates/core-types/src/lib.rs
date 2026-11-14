@@ -173,6 +173,7 @@ pub struct OutboxEventRequest {
     pub encrypted_secret: Vec<u8>,
 }
 
+#[derive(Debug)]
 pub struct DispatchResult {
     pub http_status: Option<i32>,
     pub latency_ms: i32,

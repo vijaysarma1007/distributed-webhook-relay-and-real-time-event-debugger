@@ -1,21 +1,20 @@
 mod config;
 mod helper;
 
-use std::{sync::Arc, time::Duration};
-
 use crate::config::{MAXIMUM_DATABASE_CONNECTIONS, MAX_CONCURRENT_DISPACHES};
-use anyhow::{Context, Result};
+use anyhow::{Context, Ok, Result as AnyhowResult};
 use crypto_signer::hashing::SecureSecret;
 use db_store::dbconnect::connect;
 use dotenvy;
 use helper::dipatch_cycle::run_dispatch_cycle;
 use sqlx::postgres::PgListener;
+use std::{sync::Arc, time::Duration};
 use tokio::{self, signal, sync::Semaphore};
 use tracing::{self, error, info};
 use tracing_subscriber;
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() -> AnyhowResult<()> {
     tracing_subscriber::fmt()
         .with_max_level(tracing_subscriber::filter::LevelFilter::DEBUG)
         .init();
@@ -40,7 +39,7 @@ async fn main() -> Result<()> {
     info!("Connected to Pg listener from dispatch worker");
 
     pg_listener
-        .listen("webhook_stream")
+        .listen("outbox_channel")
         .await
         .context("Listening to webhook_stream from postgres database")?;
 
@@ -55,7 +54,7 @@ async fn main() -> Result<()> {
 
             notification = pg_listener.recv() => {
                 match notification {
-                    Ok(notif) => {
+                    std::result::Result::Ok(notif) => {
                         info!("New outboox event triggered! ID: {}", notif.payload());
                         if let Err(e) = run_dispatch_cycle(pool.clone(), &securesecret, &semaphore).await{
                                     error!("Dispatch cycle failed: {e}");
@@ -70,5 +69,5 @@ async fn main() -> Result<()> {
         }
     }
 
-    todo!("add  logic for dispatch");
+    Ok(())
 }

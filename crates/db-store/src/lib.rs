@@ -4,8 +4,6 @@ pub mod clientconnect;
 pub mod config;
 pub mod dbconnect;
 
-use std::marker::PhantomData;
-
 use anyhow::{bail, Context, Ok, Result};
 use chrono::{Duration as ChronoDuration, Utc};
 use core_types::{DeliveryStatus, DispatchResult, OutBoxEvent, OutboxEventRequest};
@@ -104,6 +102,7 @@ impl DbStore<Transaction<'_, Postgres>> {
         event: &DispatchResult,
         event_id: Uuid,
     ) -> Result<()> {
+        let status = event.http_status.unwrap_or(500);
         let insert_attempt = sqlx::query!(
             r#"
                 INSERT INTO delivery_attempts (
@@ -113,7 +112,7 @@ impl DbStore<Transaction<'_, Postgres>> {
             "#,
             attempt_id,
             event_id,
-            event.http_status,
+            status,
             event.response_body,
             event.latency_ms,
             event.error_message
