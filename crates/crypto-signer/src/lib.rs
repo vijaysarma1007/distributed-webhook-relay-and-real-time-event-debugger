@@ -37,5 +37,6 @@ pub fn generate_signature(payload: &str, secret: &str, timestamp: i64) -> Result
     let hex_encode = encode(result.into_bytes());
     // returns an option with encoded String
     let formatted_signature = format!("t={},v1={}", timestamp, hex_encode);
+    // returns the formated signature with anyhow::Result
     Ok(formatted_signature)
 }

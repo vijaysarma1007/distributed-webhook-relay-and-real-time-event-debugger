@@ -157,7 +157,7 @@ pub struct LiveEventNotification {
     pub attempted_at: DateTime<Utc>,
 }
 
-///This struct is used to convert the ingest event struct into outbox event request which converts the encrypted_secret from `String` to` Vec<u8>`. This struct is used to send event which creates and stores in outbox event table.
+/// This struct is used to convert the ingest event struct into outbox event request which converts the encrypted_secret from `String` to` Vec<u8>`. This struct is used to send event which creates and stores in outbox event table.
 ///
 /// # Outbox Event Request Struct
 ///
@@ -173,11 +173,20 @@ pub struct OutboxEventRequest {
     pub encrypted_secret: Vec<u8>,
 }
 
+/// This struct is used to structure the response from client server while dispatching an event from dipatch worker service bin.
+///
+/// # DispatchResult
+///
 #[derive(Debug)]
 pub struct DispatchResult {
+    /// Status code in Option<i32> or None
     pub http_status: Option<i32>,
+    /// Time taken for the server to get a reponse
     pub latency_ms: i32,
+    // response from client's server on success
     pub response_body: Option<String>,
+    /// error message if client's server is failed
     pub error_message: Option<String>,
+    /// if dipatch event is successsful sent with success status then true or else false
     pub is_success: bool,
 }

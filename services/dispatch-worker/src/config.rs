@@ -10,3 +10,5 @@ pub(crate) const MAX_CONCURRENT_DISPACHES: usize = 20;
 pub(crate) const BASE_BACKOFF_SECONDS: i64 = 5;
 /// Maximum Number of concurrent database connections.
 pub(crate) const MAXIMUM_DATABASE_CONNECTIONS: u32 = 10;
+/// sleep time for tokio runtime if no notication is recived.
+pub(crate) const TOKIO_SLEEP_TIME: u64 = 2;
