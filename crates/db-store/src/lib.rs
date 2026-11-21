@@ -3,6 +3,7 @@
 pub mod clientconnect;
 pub mod config;
 pub mod dbconnect;
+pub mod helper;
 
 use anyhow::{bail, Context, Ok, Result};
 use chrono::{Duration as ChronoDuration, Utc};

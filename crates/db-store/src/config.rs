@@ -12,3 +12,7 @@ pub(crate) const CLIENT_CONNECTION_TIMEOUT: u64 = 4;
 pub(crate) const CLIENT_REQUEST_TIMEOUT: u64 = 10;
 /// `CLIENT_IDLE_CONNECTION_TIMEOUT` - set the maximum time for connection when idle
 pub(crate) const CLIENT_IDLE_CONNECTION_TIMEOUT: u64 = 120;
+/// `IDLE_SAFETY_POLL` - used to calculate the minimum safety idle poll time for outbox delivery
+pub(crate) const IDLE_SAFETY_POLL: u64 = 30;
+/// `MINIMUM_WAITING_TIME` - used to set the minimum garuntee waiting time if future event next_retry is less than 1.
+pub(crate) const MINIMUM_WAITING_TIME: u64 = 1;

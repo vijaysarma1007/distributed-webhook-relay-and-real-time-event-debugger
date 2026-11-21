@@ -7,6 +7,7 @@
 use super::dispatcher::execute_delivery;
 use crate::config::{BASE_BACKOFF_SECONDS, BATCH_SIZE};
 use anyhow::{Context, Result};
+use chrono::Utc;
 use core_types::{DeliveryStatus, OutBoxEvent};
 use crypto_signer::hashing::SecureSecret;
 use db_store::DbStore;
@@ -150,7 +151,8 @@ async fn process_single_event(
         error!("Failed at inserting delivery attempt: {e}");
         return;
     }
-
+    // get the current time
+    let current_time = Utc::now();
     //Insert into outbox_events status and backoff schedule if the result is successful or delivery is executed
     if result.is_success {
         // if client server returns a response with status code 200 to 299, then set the status to delievred.
@@ -169,47 +171,47 @@ async fn process_single_event(
             // stops the transaction from store and returns early.
             let _ = &store.pool.rollback().await;
             return;
-        } else if new_attempt_count >= event.max_attempts {
-            // this code block will be executed if current number of attempts crosses maximum allowed attempts
-            warn!(
-                "Event {} reached max atempts ({}/{}). Transitioning to DEAD_LETTER.",
-                event.id, new_attempt_count, event.max_attempts
+        }
+    } else if (new_attempt_count >= event.max_attempts) || (current_time > event.next_retry_at) {
+        // this code block will be executed if current number of attempts crosses maximum allowed attempts or current time is more than next retry
+        warn!(
+            "Event {} reached max atempts ({}/{}). Transitioning to DEAD_LETTER.",
+            event.id, new_attempt_count, event.max_attempts
+        );
+        // changes the status to DEADLETTER (Terminal state)
+        let status = DeliveryStatus::DeadLetter;
+        // updates the outbox events with  new status.
+        if let Err(e) = store
+            .update_outbox_events_status(event.id, new_attempt_count, status)
+            .await
+            .context("Updating outbox event status to dead letter")
+        {
+            // catch if an error is generated while updating the outbox events.
+            error!(
+                "Error at updating status to dead letter for outbox event {} :{}",
+                event.id, e
             );
-            // changes the status to DEADLETTER (Terminal state)
-            let status = DeliveryStatus::DeadLetter;
-            // updates the outbox events with  new status.
-            if let Err(e) = store
-                .update_outbox_events_status(event.id, new_attempt_count, status)
-                .await
-                .context("Updating outbox event status to dead letter")
-            {
-                // catch if an error is generated while updating the outbox events.
-                error!(
-                    "Error at updating status to dead letter for outbox event {} :{}",
-                    event.id, e
-                );
-                // stops the transaction from store and returns early.
-                let _ = &store.pool.rollback().await;
-                return;
-            }
-        } else {
-            // if new attempt count is less than maximum allowed attempts then update the outbox event if a new next_try_at value calcuted using base backoff seconds.
-            if let Err(e) = store
-                .update_outbox_events_retry(event.id, new_attempt_count, BASE_BACKOFF_SECONDS)
-                .await
-                .context("updating retry for outbox event")
-            {
-                // catch if an error is generated while updating the outbox events.
-                error!(
-                    "Error at updating next try for outbox event {} :{}",
-                    event.id, e
-                );
-                // stops the transaction from store and returns early.
-                let _ = &store.pool.rollback().await;
-                return;
-            }
-        };
-    }
+            // stops the transaction from store and returns early.
+            let _ = &store.pool.rollback().await;
+            return;
+        }
+    } else {
+        // if new attempt count is less than maximum allowed attempts then update the outbox event if a new next_try_at value calcuted using base backoff seconds.
+        if let Err(e) = store
+            .update_outbox_events_retry(event.id, new_attempt_count, BASE_BACKOFF_SECONDS)
+            .await
+            .context("updating retry for outbox event")
+        {
+            // catch if an error is generated while updating the outbox events.
+            error!(
+                "Error at updating next try for outbox event {} :{}",
+                event.id, e
+            );
+            // stops the transaction from store and returns early.
+            let _ = &store.pool.rollback().await;
+            return;
+        }
+    };
     // try to commit the entire trasaction, closes succesfully if both the updates in outbox_events and delievry_attempts are successful, if either fails transaction will emit an error.
     if let Err(e) = &store.pool.commit().await {
         error!(
